@@ -1,0 +1,210 @@
+#pragma version 3
+gtxn 0 AssetCloseTo
+global ZeroAddress
+==
+assert 
+gtxn 1 AssetCloseTo
+global ZeroAddress
+==
+assert 
+gtxn 0 RekeyTo
+global ZeroAddress
+==
+assert 
+gtxn 1 RekeyTo
+global ZeroAddress
+==
+assert
+gtxn 0 AssetCloseTo
+global ZeroAddress
+==
+assert
+gtxn 1 AssetCloseTo
+global ZeroAddress
+==
+assert
+global GroupSize
+int 2
+==
+bnz optIn
+global GroupSize
+int 3
+==
+assert
+gtxn 2 AssetCloseTo
+global ZeroAddress
+==
+assert 
+gtxn 2 AssetCloseTo
+global ZeroAddress
+==
+assert 
+gtxn 2 RekeyTo
+global ZeroAddress
+==
+assert
+gtxn 0 Fee
+int 2000
+<=
+assert
+gtxn 1 Fee 
+int 2000
+<=
+assert
+gtxn 2 Fee 
+int 2000
+<=
+assert
+gtxn 0 TypeEnum
+int 4
+==
+gtxn 1 TypeEnum
+int 4
+==
+&&
+gtxn 2 TypeEnum
+int 4
+==
+bz algoPayment
+gtxn 0 AssetAmount
+int 0
+==
+&&
+gtxn 1 AssetAmount
+int 1
+==
+&&
+gtxn 0 Sender
+gtxn 0 AssetReceiver
+==
+&&
+gtxn 0 XferAsset
+int %d
+==
+&&
+gtxn 1 XferAsset
+int %d
+==
+&&
+gtxn 2 XferAsset 
+int %d
+==
+bz secondAsset
+gtxn 2 AssetAmount
+int %d
+==
+&&
+return
+secondAsset:
+gtxn 2 XferAsset
+int %d
+==
+assert
+gtxn 2 AssetAmount
+int %d
+==
+&&
+return
+algoPayment:
+gtxn 2 TypeEnum
+int 1
+==
+&&
+gtxn 2 Amount
+int %d
+==
+&&
+return
+optIn:
+global GroupSize
+int 2
+==
+gtxn 1 TypeEnum 
+int 4
+==
+bz secondOptin
+gtxn 0 TypeEnum
+int 4
+==
+&&
+gtxn 0 XferAsset
+int %d
+==
+&&
+gtxn 1 XferAsset 
+int %d
+==
+&&
+gtxn 0 AssetAmount
+int 0
+==
+&&
+gtxn 0 Sender
+gtxn 0 AssetReceiver
+==
+&&
+gtxn 1 Sender 
+addr %s
+==
+&&
+return 
+secondOptin:
+gtxn 0 XferAsset
+int %d
+==
+bz thirdOptin
+gtxn 1 TypeEnum 
+int 1
+==
+gtxn 0 AssetAmount
+int 0
+==
+bz withdraw
+gtxn 0 Sender
+gtxn 0 AssetReceiver
+==
+&&
+gtxn 1 Sender 
+addr %s
+==
+&&
+return
+thirdOptin:
+gtxn 0 XferAsset
+int %d
+==
+bz withdraw
+gtxn 1 TypeEnum 
+int 1
+==
+gtxn 0 AssetAmount
+int 0
+==
+bz withdraw
+gtxn 0 Sender
+gtxn 0 AssetReceiver
+==
+&&
+gtxn 1 Sender 
+addr %s
+==
+&&
+return
+withdraw:
+gtxn 0 Receiver
+addr %s
+==
+bz assetWithdraw
+gtxn 1 Sender
+addr %s
+==
+return
+assetWithdraw:
+gtxn 0 AssetReceiver
+addr %s
+==
+gtxn 1 Sender 
+addr %s
+==
+&&
+return

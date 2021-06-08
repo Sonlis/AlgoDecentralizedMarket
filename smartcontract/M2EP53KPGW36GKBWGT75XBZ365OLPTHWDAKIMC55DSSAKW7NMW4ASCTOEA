@@ -1,0 +1,211 @@
+#pragma version 3
+gtxn 0 AssetCloseTo
+global ZeroAddress
+==
+assert 
+gtxn 1 AssetCloseTo
+global ZeroAddress
+==
+assert 
+gtxn 0 RekeyTo
+global ZeroAddress
+==
+assert 
+gtxn 1 RekeyTo
+global ZeroAddress
+==
+assert
+gtxn 0 AssetCloseTo
+global ZeroAddress
+==
+assert
+gtxn 1 AssetCloseTo
+global ZeroAddress
+==
+assert
+global GroupSize
+int 2
+==
+bnz optIn
+global GroupSize
+int 3
+==
+assert
+gtxn 2 AssetCloseTo
+global ZeroAddress
+==
+assert 
+gtxn 2 AssetCloseTo
+global ZeroAddress
+==
+assert 
+gtxn 2 RekeyTo
+global ZeroAddress
+==
+assert
+gtxn 0 Fee
+int 2000
+<=
+assert
+gtxn 1 Fee 
+int 2000
+<=
+assert
+gtxn 2 Fee 
+int 2000
+<=
+assert
+gtxn 0 TypeEnum
+int 4
+==
+gtxn 1 TypeEnum
+int 4
+==
+&&
+gtxn 2 TypeEnum
+int 4
+==
+bz algoPayment
+gtxn 0 AssetAmount
+int 0
+==
+&&
+gtxn 1 AssetAmount
+int 1
+==
+&&
+gtxn 0 Sender
+gtxn 0 AssetReceiver
+==
+&&
+gtxn 0 XferAsset
+int 146
+==
+&&
+gtxn 1 XferAsset
+int 146 
+==
+&&
+gtxn 2 XferAsset 
+int 20
+==
+bz secondAsset
+gtxn 2 AssetAmount
+int 10
+==
+&&
+return
+secondAsset:
+gtxn 2 XferAsset
+int 174
+==
+assert
+gtxn 2 AssetAmount
+int 1
+==
+&&
+return
+algoPayment:
+gtxn 2 TypeEnum
+int 1
+==
+&&
+gtxn 2 Amount
+int 1000
+==
+&&
+return
+optIn:
+global GroupSize
+int 2
+==
+gtxn 1 TypeEnum 
+int 4
+==
+bz secondOptin
+gtxn 0 TypeEnum
+int 4
+==
+&&
+gtxn 0 XferAsset
+int 146
+==
+&&
+gtxn 1 XferAsset 
+int 146
+==
+&&
+gtxn 0 AssetAmount
+int 0
+==
+&&
+gtxn 0 Sender
+gtxn 0 AssetReceiver
+==
+&&
+gtxn 1 Sender 
+addr POXPZO6XID4ZVQJYPOMHKD6Z33NX67GV6V4X5DU7BXICILJTQZVUITH234
+==
+&&
+return 
+secondOptin:
+gtxn 0 XferAsset
+int 20
+==
+bz thirdOptin
+gtxn 1 TypeEnum 
+int 1
+==
+gtxn 0 AssetAmount
+int 0
+==
+bz withdraw
+gtxn 0 Sender
+gtxn 0 AssetReceiver
+==
+&&
+gtxn 1 Sender 
+addr POXPZO6XID4ZVQJYPOMHKD6Z33NX67GV6V4X5DU7BXICILJTQZVUITH234
+==
+&&
+return
+thirdOptin:
+gtxn 0 XferAsset
+int 174
+==
+bz withdraw
+gtxn 1 TypeEnum 
+int 1
+==
+
+gtxn 0 AssetAmount
+int 0
+==
+bz withdraw
+gtxn 0 Sender
+gtxn 0 AssetReceiver
+==
+&&
+gtxn 1 Sender 
+addr POXPZO6XID4ZVQJYPOMHKD6Z33NX67GV6V4X5DU7BXICILJTQZVUITH234
+==
+&&
+return
+withdraw:
+gtxn 0 Receiver
+addr POXPZO6XID4ZVQJYPOMHKD6Z33NX67GV6V4X5DU7BXICILJTQZVUITH234
+==
+bz assetWithdraw
+gtxn 1 Sender
+addr POXPZO6XID4ZVQJYPOMHKD6Z33NX67GV6V4X5DU7BXICILJTQZVUITH234 
+==
+return
+assetWithdraw:
+gtxn 0 AssetReceiver
+addr POXPZO6XID4ZVQJYPOMHKD6Z33NX67GV6V4X5DU7BXICILJTQZVUITH234
+==
+gtxn 1 Sender 
+addr POXPZO6XID4ZVQJYPOMHKD6Z33NX67GV6V4X5DU7BXICILJTQZVUITH234 
+==
+&&
+return
