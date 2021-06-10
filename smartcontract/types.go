@@ -78,17 +78,11 @@ type Tx struct {
 }
 
 type Withdraw struct {
+	AssetID 	uint64 `json:"assetid"`
+	AssetAmount uint64 `json:"assetamount"`
 	Algo 	uint64 `json:"algosamount"`
 	Address string `json:"escrowaddress"`
 	Creator string `json:"to"`
 }
-
-type WithdrawAsset struct {
-	AssetID 	uint64 `json:"assetid"`
-	AssetAmount uint64 `json:"assetamount"`
-	Address 	string `json:"escrowaddress"`
-	Creator 	string `json:"to"`
-}
-
 
 var sellings []Selling
