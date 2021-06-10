@@ -37,11 +37,16 @@ func buy(w http.ResponseWriter, r *http.Request) {
         http.Error(w, err.Error(), 400)
         return
     }
-    genID, genHash, minFee, firstValidRound, lastValidRound := algoClient.getParams()
+    genID, genHash, minFee, firstValidRound, lastValidRound, err := algoClient.getParams()
+	if err != nil {
+		log.Printf("Error retrieving network parameters: %v\n", err)
+		http.Error(w, err.Error(), 500)
+        return
+	}
     genHash64 := base64.StdEncoding.EncodeToString(genHash)
     txn1, err := transaction.MakeAssetAcceptanceTxn(tx.Sender, 1, firstValidRound, lastValidRound, nil, genID, genHash64, tx.ToBuy)
     if err != nil {
-        log.Printf("Error making accept transaction of account %s for asset %d: %v\n", tx.Sender, tx.ToBuy, err)
+        log.Printf("Error making opt-in transaction of account %s for asset %d: %v\n", tx.Sender, tx.ToBuy, err)
         http.Error(w, err.Error(), 400)
         return
     }
@@ -69,7 +74,12 @@ func buy(w http.ResponseWriter, r *http.Request) {
             return
         }
     }
-    teal := readTeal(tx.Address)
+    teal, err := readTeal(tx.Address)
+	if err != nil {
+		log.Printf("Error reading teal: %v\n", err)
+		http.Error(w, err.Error(), 500)
+        return
+	}
     response, err := algoClient.c.TealCompile(teal).Do(context.Background())
     if err != nil {
         log.Printf("Error compiling teal: %v\n", err)
@@ -132,7 +142,12 @@ func withdraw(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), 400)
         return
     }
-    genID, genHash, minFee, firstValidRound, lastValidRound := algoClient.getParams()
+    genID, genHash, minFee, firstValidRound, lastValidRound, err := algoClient.getParams()
+	if err != nil {
+		log.Printf("Error getting suggested parameters: %v\n", err)
+		http.Error(w, err.Error(), 500)
+        return
+	}
 	genHash64 := base64.StdEncoding.EncodeToString(genHash)
 
 	if (withdraw.Algo == 0){
@@ -158,7 +173,12 @@ func withdraw(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), 400)
         return
     }
-    teal := readTeal(withdraw.Address)
+    teal, err := readTeal(withdraw.Address)
+	if err != nil {
+		log.Printf("Error reading teal: %v\n", err)
+		http.Error(w, err.Error(), 500)
+        return
+	}
     response, err := algoClient.c.TealCompile(teal).Do(context.Background())
     if err != nil {
         log.Printf("Error compiling teal: %v\n", err)

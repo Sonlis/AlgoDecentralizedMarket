@@ -33,9 +33,19 @@ func createEscrow(w http.ResponseWriter, r *http.Request) {
         http.Error(w, err.Error(), 500)
         return
     }
-    lsig, addr := algoClient.generateTeal(p)
+    lsig, addr, err := algoClient.generateTeal(p)
+	if err != nil {
+		log.Printf("Error compiling teal: %v\n", err)
+		http.Error(w, err.Error(), 500)
+        return
+	}
 
-    genID, genHash, minFee, firstValidRound, lastValidRound := algoClient.getParams()
+    genID, genHash, minFee, firstValidRound, lastValidRound, err := algoClient.getParams()
+	if err != nil {
+		log.Printf("Error getting suggested parameters: %v\n", err)
+		http.Error(w, err.Error(), 500)
+        return
+	}
     var amount uint64 = 1000000
     tx1, err := transaction.MakePaymentTxnWithFlatFee(account1, addr, minFee, amount, firstValidRound, lastValidRound, nil, "", genID, genHash)
     if err != nil {
@@ -100,7 +110,10 @@ func createEscrow(w http.ResponseWriter, r *http.Request) {
 }
 
 func (c *AlgoClient) opTin(index uint64, addr string, account string, lsig types.LogicSig, sk1 ed25519.PrivateKey) (err error) {
-    genID, genHash, minFee, firstValidRound, lastValidRound := c.getParams()
+    genID, genHash, minFee, firstValidRound, lastValidRound, err := c.getParams()
+	if err != nil {
+		return err
+	}
     genHash64 := base64.StdEncoding.EncodeToString(genHash)
     txn1, err := transaction.MakeAssetAcceptanceTxn(addr, 0, firstValidRound, lastValidRound, nil, genID, genHash64, index)
     if err != nil {
@@ -135,26 +148,34 @@ func (c *AlgoClient) opTin(index uint64, addr string, account string, lsig types
     return nil
 }
 func fundEscrow(p Choice, addr string, c *AlgoClient, w http.ResponseWriter) (txGroup TransactionGroup, err error) {
-    genID, genHash, _, firstValidRound, lastValidRound := c.getParams()
+    genID, genHash, minFee, firstValidRound, lastValidRound, err := c.getParams()
+	if err != nil {
+		log.Printf("Error getting suggested parameters: %v\n", err)
+		http.Error(w, err.Error(), 500)
+        return
+	}
     genHash64 := base64.StdEncoding.EncodeToString(genHash)
-    lsig, addr := c.generateTeal(p)
+    lsig, addr, err := c.generateTeal(p)
+	if err != nil {
+		return
+	}
     txn1, err := transaction.MakeAssetAcceptanceTxn(addr, 0, firstValidRound, lastValidRound, nil, genID, genHash64, p.AssetId)
     if err != nil {
-        return txGroup, err
+        return 
     }
-    txn2, err := transaction.MakeAssetTransferTxn(p.CreatorAddress, addr, "", p.AssetAmount, 0, firstValidRound, lastValidRound, nil, genID, genHash64, p.AssetId)
+    txn2, err := transaction.MakeAssetTransferTxnWithFlatFee(p.CreatorAddress, addr, "", p.AssetAmount, minFee, firstValidRound, lastValidRound, nil, genID, genHash64, p.AssetId)
     if err != nil {
-        return txGroup, err
+        return
     }
     gid, err := crypto.ComputeGroupID([]types.Transaction{txn1, txn2})
     if err != nil {
-        return txGroup, err
+        return 
     }
     txn1.Group = gid
     txn2.Group = gid
     _, stx1, err := crypto.SignLogicsigTransaction(lsig, txn1)
     if err != nil {
-        return txGroup, err
+        return
     }
     txGroup.FirstTx = stx1 
     txGroup.SecondTx = txn2
