@@ -1,7 +1,7 @@
 <template>
     <div>
         <button v-on:click="getSellings()" ><span>Get assets being sold</span></button>
-        <div class="form-check" v-for="(asset) in sellings.assets" :key="asset['asset-id']">
+        <div class="sellings" v-for="(asset) in sellings.assets" :key="asset['asset-id']">
             <p>Asset {{asset['asset-id']}}</p>
                 <button :name="asset['fassetid']" :id="asset['fassetid']" v-on:click="returnBuyParameters(asset['fassetid'], asset['fassetamount'], asset['address'], asset['asset-id'], 0)">Buy with {{asset["fassetamount"]}} of asset {{asset["fassetid"]}}</button>
                 <button :name="asset['sassetid']" :id="asset['sassetid']" v-on:click="returnBuyParameters(asset['sassetid'], asset['sassetamount'], asset['address'], asset['asset-id'], 0)">Buy with {{asset['sassetamount']}} of asset {{asset["sassetid"]}}</button>
@@ -45,3 +45,12 @@ export default {
 }
 
 </script>
+
+<style scoped>
+
+.sellings {
+    padding-top: 1%;
+    margin-top: 1%;
+}
+
+</style>

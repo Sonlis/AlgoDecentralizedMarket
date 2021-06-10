@@ -1,23 +1,26 @@
 <template>
 <div>
-    <div class="form-group">
+    <div>
+        <h4>Create an asset</h4>
         <label for="assetName">Asset Name</label>
-        <input type="assetName" class="form-control" id="assetName" placeholder="Ouis"
+        <input type="assetName"  id="assetName" placeholder="Ouis"
             v-model="form.assetName">
         <label for="assetUnitName">Asset Unit Name</label>
-        <input type="assetUnitName" class="form-control" id="assetUnitName" placeholder="Oui"
+        <input type="assetUnitName"  id="assetUnitName" placeholder="Oui"
             v-model="form.assetUnitName">
         <label for="assetTotal">Asset Total</label>
-        <input type="assetTotal" class="form-control" id="assetTotal" placeholder=1000
+        <input type="assetTotal"  id="assetTotal" placeholder=1000
             v-model.number="form.assetTotal">
         <label for="assetURL">Asset URL</label>
-        <input type="assetURL" class="form-control" id="assetURL" placeholder="http://oui.com"
+        <input type="assetURL"  id="assetURL" placeholder="http://oui.com"
             v-model="form.assetURL">
+            <br />
         <button v-on:click="createAsset()" ><span>Create asset</span></button>
     </div>
+    <br />
     <div> 
-        <h3>You can opt-in an asset here:</h3> 
-        <p>Opt-in asset number <input type="number" class="form-control" id="optinnumber" v-model.number="optinnumber"> <button v-on:click="optin(optinnumber)">opt-in</button></p>
+        <h4>You can opt-in an asset here:</h4> 
+        <p>Opt-in asset number <input type="number" id="optinnumber" v-model.number="optinnumber"> <button v-on:click="optin(optinnumber)">opt-in</button></p>
     </div>
 </div>
 </template>
@@ -79,3 +82,9 @@ export default {
     }
 }
 </script>
+
+<style scoped>
+#form-control {
+    width: 15%;
+}
+</style>

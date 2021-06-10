@@ -1,13 +1,12 @@
 <template>
 <div>
-  <h1>Algorand Decentralized Market Place</h1>
+  <h2>Algorand Decentralized Market Place</h2>
   <div class="Connection"> 
-    <p>First, connect to myAlgo</p>
     <my-algo-connection v-on:clicked="saveAddress"></my-algo-connection>
   </div>
 
-  <div>
-    <b-tabs content-class="mt-3">
+  <div class="tabs">
+    <b-tabs content-class="mt-3" lazy>
       <b-tab title="Helper functions">
         <create-asset :addrToUse="addrToUse"></create-asset>
       </b-tab> 
@@ -38,7 +37,7 @@ const algodClient = new algosdk.Algodv2('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 const myAlgoWallet = new MyAlgo();
 
 export default {
-    name: 'Charts',
+    name: 'AlgoDeMarket',
     components: {
       MyAlgoConnection,
         CreateAsset,
@@ -224,7 +223,18 @@ export default {
 
           },
     }   
-    }
-        
-        
+    }        
 </script>
+
+<style> 
+
+  body {
+    padding-left: 2%;
+    padding-right: 2%;
+    background-color: rgb(233, 233, 233)
+  }
+  input {
+    width: 25%;
+  }
+  
+</style>
