@@ -1,16 +1,16 @@
 <template>
   <div id="app">
-    <Charts />
+    <AlgoDeMarket />
   </div>
 </template>
 
 <script>
-import Charts from './components/Charts.vue'
+import AlgoDeMarket from './components/AlgoDeMarket.vue'
 
 export default {
   name: 'App',
   components: {
-    Charts
+    AlgoDeMarket
   }
 }
 </script>
