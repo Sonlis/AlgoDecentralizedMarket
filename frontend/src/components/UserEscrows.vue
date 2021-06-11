@@ -23,8 +23,7 @@ export default {
                 assetID: 0,
                 assetAmount: 0,
                 algosAmount: 0,
-            },
-            
+            }, 
         }
     },
     methods: {
@@ -47,3 +46,11 @@ export default {
 }
 
 </script>
+
+<style scoped>
+
+li {
+    display: inline-block;
+}
+
+</style>

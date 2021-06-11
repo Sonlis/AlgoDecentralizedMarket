@@ -76,7 +76,7 @@ export default {
         };
           let signedTxn = await myAlgoWallet.signTransaction(txn);
           console.log(signedTxn.txID);
-  
+
           await algodClient.sendRawTransaction(signedTxn.blob).do();
       }
     }
