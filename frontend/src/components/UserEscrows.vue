@@ -2,9 +2,11 @@
     <div>
         <button v-on:click="lookupSellings()">Get your escrow accounts</button>
         <div v-if="pressed">
-            <li v-for="asset in escrows" :key="asset['address']"><p>Address: {{asset['address']}}, Algo Amount: {{asset['amount']}}, <p v-for="assets in asset.assets" :key="assets['asset-id']"> {{assets['amount']}} of asset {{assets['asset-id']}}</p></li>
-            <p>Withdraw <input type="number" id="algosamount" placeholder=1000 v-model.number="withdrawForm.algosAmount"> Algos from <input id="paymentAssetID" v-model="withdrawForm.escrowAddress"><button v-on:click="returnWithdrawParameters()">Withdraw</button></p>
-            <p>Withdraw <input type="number" id="withdrawassetamount" placeholder=1000 v-model.number="withdrawForm.assetAmount"> of asset number <input type="number" id="withdrawassetid" placeholder=1000 v-model.number="withdrawForm.assetID"> from <input id="escrowaddress2" v-model="withdrawForm.escrowAddress"><button v-on:click="returnWithdrawParameters()">Withdraw</button></p>
+            <div class="escrows" v-for="asset in escrows" :key="asset['address']" >
+                <p>Address: {{asset['address']}}</p>
+                <p>Algo Amount: {{asset['amount']}}</p> <p>Withdraw <input type="number" id="algosamount" placeholder=1000 v-model.number="withdrawForm.algosAmount"> Algos <button v-on:click="returnWithdrawParameters(asset['address'], 0)">Withdraw</button></p>
+                <div v-for="assets in asset.assets" :key="assets['asset-id']"><p v-if="assets['amount'] != 0"> {{assets['amount']}} of asset {{assets['asset-id']}}. Withdraw <input type="number" id="withdrawassetamount" placeholder=1000 v-model.number="withdrawForm.assetAmount"> of asset {{ assets['asset-id'] }} <button v-on:click="returnWithdrawParameters(asset['address'], assets['asset-id'])">Withdraw</button></p></div>
+            </div>
         </div>
     </div>
 </template>
@@ -38,7 +40,9 @@ export default {
           this.escrows = await response.json();
           this.pressed = !this.pressed
         },
-        returnWithdrawParameters: function() {
+        returnWithdrawParameters: function(escrowAddress, assetID) {
+            this.withdrawForm.escrowAddress = escrowAddress
+            this.withdrawForm.assetID = assetID
             this.$emit('returnWithdrawParameters', this.withdrawForm)
         }
 
@@ -51,6 +55,15 @@ export default {
 
 li {
     display: inline-block;
+}
+
+.escrows {
+    margin-top: 2%;
+    border: 1px dotted black;
+}
+
+input {
+    width: 10%;
 }
 
 </style>

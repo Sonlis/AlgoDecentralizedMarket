@@ -79,19 +79,19 @@ gtxn 0 AssetReceiver
 ==
 &&
 gtxn 0 XferAsset
-int %d         //assetid
+int %d
 ==
 &&
 gtxn 1 XferAsset
-int %d         //assetid
+int %d
 ==
 &&
 gtxn 2 XferAsset 
-int %d         //paymentassetid
+int %d
 ==
 &&
 gtxn 2 AssetAmount
-int %d          //paymentassetamount
+int 1
 ==
 &&
 return
@@ -101,7 +101,7 @@ int 1
 ==
 &&
 gtxn 2 Amount
-int %d          //algoamount
+int %d
 ==
 &&
 return
@@ -118,11 +118,11 @@ int 4
 ==
 &&
 gtxn 0 XferAsset
-int %d          //assetid
+int %d
 ==
 &&
 gtxn 1 XferAsset 
-int %d          //assetid
+int %d
 ==
 &&
 gtxn 0 AssetAmount
@@ -134,46 +134,50 @@ gtxn 0 AssetReceiver
 ==
 &&
 gtxn 1 Sender 
-addr %s       //creatoraddress
+addr %s
 ==
 &&
 return 
 secondOptin:
+gtxn 0 TypeEnum
+int 4
+==
+bz withdraw
+gtxn 0 AssetAmount
+int 0
+==
+bz withdraw
 gtxn 0 XferAsset
-int %d         //paymentassetid
+int %d
 ==
 gtxn 1 TypeEnum 
 int 1
 ==
 &&
-gtxn 0 AssetAmount
-int 0
-==
-bz withdraw
 gtxn 0 Sender
 gtxn 0 AssetReceiver
 ==
 &&
 gtxn 1 Sender 
-addr %s         //account1
+addr %s
 ==
 &&
 return
 withdraw:
 gtxn 0 Receiver
-addr %s         //creatoraddress
+addr %s
 ==
 bz assetWithdraw
 gtxn 1 Sender
-addr %s         //creatoraddress
+addr %s
 ==
 return
 assetWithdraw:
 gtxn 0 AssetReceiver
-addr %s         //creatoraddress
+addr %s
 ==
 gtxn 1 Sender 
-addr %s         //creatoraddress
+addr %s
 ==
 &&
 return

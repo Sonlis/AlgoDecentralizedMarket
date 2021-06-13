@@ -179,7 +179,7 @@ export default {
             body: JSON.stringify({"assetamount": withdrawForm.assetAmount, "assetid": withdrawForm.assetID, "escrowaddress": withdrawForm.escrowAddress, "to": this.addrToUse}),
           }
             console.log(this.requestOptions.body)
-            const response = await fetch("http://localhost:8081/withdrawAssets", this.requestOptions);
+            const response = await fetch("http://localhost:8081/withdraw", this.requestOptions);
             let withdraw = await response.json();
             this.stxn1 = withdraw['firsttx']
             this.tx2 = withdraw['secondtx']
@@ -191,7 +191,7 @@ export default {
             body: JSON.stringify({"algosamount": withdrawForm.algosAmount, "escrowaddress": withdrawForm.escrowAddress, "to": this.addrToUse})
             }
             console.log(this.requestOptions.body)
-            const response = await fetch("http://localhost:8081/withdrawAlgos", this.requestOptions);
+            const response = await fetch("http://localhost:8081/withdraw", this.requestOptions);
             let withdraw = await response.json();
             this.stxn1 = withdraw['firsttx']
             this.tx2 = withdraw['secondtx']
@@ -220,8 +220,26 @@ export default {
           } catch(exception) {
             console.log(exception)
           }
-
           },
+        download_txns: function (name, txns)  {
+    let b = new Uint8Array(0);
+    for(const txn in txns){
+        b = this.concatTypedArrays(b, txns[txn])
+    }
+    var blob = new Blob([b], {type: "application/octet-stream"});
+
+    var link = document.createElement('a');
+    link.href = window.URL.createObjectURL(blob);
+    link.download = name;
+    link.click();
+},
+
+concatTypedArrays: function (a, b) { // a, b TypedArray of same type
+    var c = new (a.constructor)(a.length + b.length);
+    c.set(a, 0);
+    c.set(b, a.length);
+    return c;
+}
     }   
     }        
 </script>
@@ -235,6 +253,9 @@ export default {
   }
   input {
     width: 25%;
+  }
+  .error {
+    color: red;
   }
   
 </style>

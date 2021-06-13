@@ -12,30 +12,40 @@
             <div class="error" v-if="$v.sellForm.assetID.$invalid && submitStatus === 'ERROR'">Please select an asset to sell</div>
             <br />
             <div class="form">
-                <label for="assetAmount">Amount of asset to sell</label>
-                <input type="assetAmount"  id="assetAmount" placeholder=0
-                    v-model.number="sellForm.assetAmount">
-                <div class="error" v-if="$v.sellForm.assetAmount.$invalid && submitStatus === 'ERROR'">Please enter an amount of asset to sell</div>
+                <div class="form-line">
+                    <h5> Amount of asset {{ sellForm.assetID }} to sell</h5>
+                    <label for="assetAmount">Amount of asset to sell</label>
+                    <input type="assetAmount"  id="assetAmount" placeholder=0
+                        v-model.number="sellForm.assetAmount">
+                    <div class="error" v-if="$v.sellForm.assetAmount.$invalid && submitStatus === 'ERROR'">Please enter an amount of asset to sell</div>
 
-                <label for="paymentAssetID">First asset ID to accept for trade (payment asset)</label>
-                <input type="number"  id="paymentAssetID" placeholder=1000
-                    v-model.number="sellForm.paymentAssetID">
+                    <label for="algoAmount">MicroAlgo needed to buy the asset</label>
+                    <input type="number"  id="algoAmount" placeholder="10000"
+                        v-model.number="sellForm.algoAmount">
+                    <div class="error" v-if="$v.sellForm.algoAmount.$invalid && submitStatus === 'ERROR'">Please enter an amount of algo to buy the asset</div>
+                </div>
+                <div class="form-line">
+                    <h5> First payment asset (required)</h5>
+                    <label for="paymentAssetID">First asset ID to accept for trade (payment asset)</label>
+                    <input type="number"  id="paymentAssetID" placeholder=1000
+                        v-model.number="sellForm.paymentAssetID">
+                    <div class="error" v-if="$v.sellForm.paymentAssetID.$invalid && submitStatus === 'ERROR'">Please enter an asset to exchange your asset for</div>
+                
+                    <label for="paymentAssetAmount">First payment asset amount</label>
+                    <input type="number"  id="paymentAssetAmount" 
+                        v-model.number="sellForm.paymentAssetAmount">
+                    <div class="error" v-if="$v.sellForm.paymentAssetAmount.$invalid && submitStatus === 'ERROR'">Please enter an amount of asset to exchange your asset for</div>
+                </div>
+                <div class="form-line">
+                    <h5> Second payment asset (optionnal)</h5>
+                    <label for="secondPaymentAssetID">Second asset ID to accept for trade (payment asset)</label>
+                    <input type="number"  id="secondPaymentAssetID" 
+                        v-model.number="sellForm.secondPaymentAssetID">
 
-                <label for="paymentAssetAmount">First payment asset amount</label>
-                <input type="number"  id="paymentAssetAmount" 
-                    v-model.number="sellForm.paymentAssetAmount">
-
-                <label for="secondPaymentAssetID">Second asset ID to accept for trade (payment asset)</label>
-                <input type="number"  id="secondPaymentAssetID" 
-                    v-model.number="sellForm.secondPaymentAssetID">
-
-                <label for="secondPaymentAssetAmount">Second payment asset Amount</label>
-                <input type="number"  id="secondPaymentAssetAmount" placeholder=1000
-                    v-model.number="sellForm.secondPaymentAssetAmount">
-
-                <label for="algoAmount">MicroAlgo needed to buy the asset</label>
-                <input type="number"  id="algoAmount" placeholder="1000"
-                    v-model.number="sellForm.algoAmount">
+                    <label for="secondPaymentAssetAmount">Second payment asset Amount</label>
+                    <input type="number"  id="secondPaymentAssetAmount" placeholder=1000
+                        v-model.number="sellForm.secondPaymentAssetAmount">
+                </div>
             </div>
             <button v-on:click="returnSellParameters()">Sell the asset</button>
             <p class="error" v-if="submitStatus === 'ERROR'">Please fill the form correctly.</p>
@@ -70,7 +80,10 @@ export default {
     validations: {
         sellForm: {
             assetID: { required, minValue: minValue(1), },
-            assetAmount: { required, minValue: minValue(1) }
+            assetAmount: { required, minValue: minValue(1) },
+            algoAmount: { required, minValue: minValue(1) },
+            paymentAssetID: { required, minValue: minValue(1) },
+            paymentAssetAmount: { required, minValue: minValue(1) },
         }
         },
     methods: {
@@ -88,7 +101,6 @@ export default {
         },
         
         returnSellParameters: function() {
-            console.log(this.$v)
             this.$v.$touch()
             if (this.$v.$invalid) {
                 this.submitStatus = 'ERROR'
@@ -105,11 +117,13 @@ export default {
 
 <style scoped>
 
-.error {
-    color: red;
-}
 .chooseAsset {
     width: 50%;
     display: inline-block;
+}
+
+.form-line {
+    margin-top: 2%;
+    border-bottom: 1px dotted black;
 }
 </style>

@@ -150,7 +150,7 @@ func withdraw(w http.ResponseWriter, r *http.Request) {
 	}
 	genHash64 := base64.StdEncoding.EncodeToString(genHash)
 
-	if (withdraw.Algo == 0){
+	if (withdraw.Algo != 0){
 		txn1, err = transaction.MakePaymentTxnWithFlatFee(withdraw.Address, withdraw.Creator, minFee, withdraw.Algo, firstValidRound, lastValidRound, nil, "", genID, genHash)
 		if err != nil {
 			log.Printf("Error making payment transaction of %d Algos from %s to %s: %v\n", withdraw.Algo, withdraw.Address, withdraw.Creator, err)
@@ -166,7 +166,6 @@ func withdraw(w http.ResponseWriter, r *http.Request) {
 			return
     }
 	}
-    
     txn2, err := transaction.MakePaymentTxnWithFlatFee(withdraw.Creator, withdraw.Address, minFee, 1, firstValidRound, lastValidRound, nil, "", genID, genHash)
     if err != nil {
         log.Printf("Error making payment transaction of %d Algo from %s to %s: %v\n\n", 1, withdraw.Creator, withdraw.Address,err)
