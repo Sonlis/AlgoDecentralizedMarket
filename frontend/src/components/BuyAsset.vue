@@ -3,9 +3,9 @@
         <button v-on:click="getSellings()" ><span>Get assets being sold</span></button>
         <div class="sellings" v-for="(asset) in sellings.assets" :key="asset['asset-id']">
             <p>Asset {{asset['asset-id']}}</p>
-                <button :name="asset['fassetid']" :id="asset['fassetid']" v-on:click="returnBuyParameters(asset['fassetid'], asset['fassetamount'], asset['address'], asset['asset-id'], 0)">Buy with {{asset["fassetamount"]}} of asset {{asset["fassetid"]}}</button>
-                <button :name="asset['sassetid']" :id="asset['sassetid']" v-on:click="returnBuyParameters(asset['sassetid'], asset['sassetamount'], asset['address'], asset['asset-id'], 0)">Buy with {{asset['sassetamount']}} of asset {{asset["sassetid"]}}</button>
-                <button :name="asset['algoamount']" :id="asset['algoamount']" v-on:click="returnBuyParameters(0, 0, asset['address'],  asset['asset-id'], asset['algoamount'] )">Buy with {{asset['algoamount']}} Algos</button>
+                <button v-if="asset['fassetid'] != 0" :name="asset['fassetid']" :id="asset['fassetid']" v-on:click="returnBuyParameters(asset['fassetid'], asset['fassetamount'], asset['address'], asset['asset-id'], 0)">Buy with {{asset["fassetamount"]}} of asset {{asset["fassetid"]}}</button>
+                <button v-if="asset['sassetid'] != 0" :name="asset['sassetid']" :id="asset['sassetid']" v-on:click="returnBuyParameters(asset['sassetid'], asset['sassetamount'], asset['address'], asset['asset-id'], 0)">Buy with {{asset['sassetamount']}} of asset {{asset["sassetid"]}}</button>
+                <button v-if="asset['algoamount'] != 0" :name="asset['algoamount']" :id="asset['algoamount']" v-on:click="returnBuyParameters(0, 0, asset['address'],  asset['asset-id'], asset['algoamount'] )">Buy with {{asset['algoamount']}} Algos</button>
         </div>
     </div>
 </template>

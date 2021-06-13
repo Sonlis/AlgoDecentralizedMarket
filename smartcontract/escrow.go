@@ -16,7 +16,7 @@ import (
 
 func createEscrow(w http.ResponseWriter, r *http.Request) {
     var p Choice
-    var pointer *uint64
+    
     decoder := json.NewDecoder(r.Body)
     err := decoder.Decode(&p)
     if err != nil {
@@ -75,8 +75,7 @@ func createEscrow(w http.ResponseWriter, r *http.Request) {
         http.Error(w, err.Error(), 400)
         return
     }
-    pointer = &p.SecondPaymentAssetId
-    if pointer != nil {
+    if p.SecondPaymentAssetId != 0 {
         err = algoClient.opTin(p.SecondPaymentAssetId, addr, account1, lsig, sk1)
         if err != nil {
             log.Printf("Failed to opt-in asset %d: %v\n", p.SecondPaymentAssetId, err)

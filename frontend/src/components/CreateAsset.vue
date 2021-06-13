@@ -5,15 +5,19 @@
         <label for="assetName">Asset Name</label>
         <input type="assetName"  id="assetName" placeholder="Ouis"
             v-model="form.assetName">
+        <div class="error" v-if="$v.form.assetName.$invalid && submitStatus === 'ERROR'">Please enter an asset name</div>
         <label for="assetUnitName">Asset Unit Name</label>
         <input type="assetUnitName"  id="assetUnitName" placeholder="Oui"
             v-model="form.assetUnitName">
+        <div class="error" v-if="$v.form.assetUnitName.$invalid && submitStatus === 'ERROR'">Please enter an asset unit name</div>
         <label for="assetTotal">Asset Total</label>
         <input type="assetTotal"  id="assetTotal" placeholder=1000
             v-model.number="form.assetTotal">
+        <div class="error" v-if="$v.form.assetTotal.$invalid && submitStatus === 'ERROR'">Please enter an asset total</div>
         <label for="assetURL">Asset URL</label>
         <input type="assetURL"  id="assetURL" placeholder="http://oui.com"
             v-model="form.assetURL">
+        <div class="error" v-if="$v.form.assetURL.$invalid && submitStatus === 'ERROR'">Please enter an asset URL</div>
             <br />
         <button v-on:click="createAsset()" ><span>Create asset</span></button>
     </div>
@@ -26,6 +30,7 @@
 </template>
 
 <script> 
+import { required, minValue } from 'vuelidate/lib/validators'
 import MyAlgo from '@randlabs/myalgo-connect';
 import algosdk from 'algosdk';
 const myAlgoWallet = new MyAlgo();
@@ -43,24 +48,40 @@ export default {
                 assetURL: ''
             },
             optinnumber: 0,
+            submitStatus: null
         }
+    },
+    validations: {
+        form: {
+            assetName: { required },
+            assetUnitName: { required },
+            assetTotal: {required, minValue: minValue(1) },
+            assetURL: { required },
+        },
     },
     methods: {
         createAsset: async function() {
-            console.log(this.addrToUse)
-            let txn = await algodClient.getTransactionParams().do();
-            txn = {
-            ...txn,
-            type: 'acfg',
-            from: this.addrToUse,
-            assetName: this.form.assetName,
-            assetUnitName: this.form.assetUnitName,
-            assetTotal: this.form.assetTotal,
-            assetURL: this.form.assetURL,
-            assetManager: this.addrToUse,
-            assetReserve: this.addrToUse,
-    };
-        myAlgoWallet.signTransaction(txn);
+            this.$v.$touch()
+            if (this.$v.$invalid) {
+                this.submitStatus = 'ERROR'
+            } else {
+                this.submitStatus = 'PENDING'
+                let txn = await algodClient.getTransactionParams().do();
+                txn = {
+                ...txn,
+                type: 'acfg',
+                from: this.addrToUse,
+                assetName: this.form.assetName,
+                assetUnitName: this.form.assetUnitName,
+                assetTotal: this.form.assetTotal,
+                assetURL: this.form.assetURL,
+                assetManager: this.addrToUse,
+                assetReserve: this.addrToUse,
+        };
+            let signedTxn = myAlgoWallet.signTransaction(txn);
+            await algodClient.sendRawTransaction(signedTxn.blob).do();
+            this.submitStatus = 'OK'
+        }
         },
         optin: async function(optinnumber) {
           let txn = await algodClient.getTransactionParams().do();
@@ -75,7 +96,6 @@ export default {
           amount: 0,
         };
           let signedTxn = await myAlgoWallet.signTransaction(txn);
-          console.log(signedTxn.txID);
 
           await algodClient.sendRawTransaction(signedTxn.blob).do();
       }
