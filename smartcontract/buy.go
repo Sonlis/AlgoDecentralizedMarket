@@ -74,6 +74,12 @@ func buy(w http.ResponseWriter, r *http.Request) {
             return
         }
     }
+    txn4, err := transaction.MakePaymentTxnWithFlatFee(tx.Sender, tx.Address, minFee, minFee, firstValidRound, lastValidRound, nil, "", genID, genHash)
+    if err != nil {
+        log.Printf("Failed making payment transaction of amount %d from %s to %s: %v\n\n", minFee, tx.Sender, tx.Address, err)
+            http.Error(w, err.Error(), 400)
+            return
+    }
     teal, err := readTeal(tx.Address)
 	if err != nil {
 		log.Printf("Error reading teal: %v\n", err)
@@ -95,7 +101,7 @@ func buy(w http.ResponseWriter, r *http.Request) {
         return
     }
 
-    gid, err := crypto.ComputeGroupID([]types.Transaction{txn1, txn2, txn3})
+    gid, err := crypto.ComputeGroupID([]types.Transaction{txn1, txn2, txn3, txn4})
     if err != nil {
         log.Printf("Error calculating the group ID: %v\n", err)
         http.Error(w, err.Error(), 400)
@@ -104,6 +110,7 @@ func buy(w http.ResponseWriter, r *http.Request) {
     txn1.Group = gid
     txn2.Group = gid
     txn3.Group = gid
+    txn4.Group = gid
     _, stx2, err := crypto.SignLogicsigTransaction(lsig, txn2)
     if err != nil {
         log.Printf("Error signing with logic: %v\n", err)
@@ -113,6 +120,7 @@ func buy(w http.ResponseWriter, r *http.Request) {
     txGroup.FirstTx = txn1
     txGroup.SecondTx = stx2
     txGroup.ThirdTx = txn3
+    txGroup.ForthTx = txn4
 
     if err := json.NewEncoder(w).Encode(txGroup); err != nil {
         log.Printf("Error sending back response: %v\n", err)
@@ -166,9 +174,9 @@ func withdraw(w http.ResponseWriter, r *http.Request) {
 			return
     }
 	}
-    txn2, err := transaction.MakePaymentTxnWithFlatFee(withdraw.Creator, withdraw.Address, minFee, 1, firstValidRound, lastValidRound, nil, "", genID, genHash)
+    txn2, err := transaction.MakePaymentTxnWithFlatFee(withdraw.Creator, withdraw.Address, minFee, minFee, firstValidRound, lastValidRound, nil, "", genID, genHash)
     if err != nil {
-        log.Printf("Error making payment transaction of %d Algo from %s to %s: %v\n\n", 1, withdraw.Creator, withdraw.Address,err)
+        log.Printf("Error making payment transaction of %d Algo from %s to %s: %v\n\n", minFee, withdraw.Creator, withdraw.Address,err)
 		http.Error(w, err.Error(), 400)
         return
     }

@@ -23,12 +23,20 @@ gtxn 1 AssetCloseTo
 global ZeroAddress
 ==
 assert
+gtxn 0 Fee
+int 2000
+<=
+assert
+gtxn 1 Fee 
+int 2000
+<=
+assert
 global GroupSize
 int 2
 ==
 bnz optIn
 global GroupSize
-int 3
+int 4
 ==
 assert
 gtxn 2 AssetCloseTo
@@ -43,17 +51,37 @@ gtxn 2 RekeyTo
 global ZeroAddress
 ==
 assert
-gtxn 0 Fee
-int 2000
-<=
-assert
-gtxn 1 Fee 
-int 2000
-<=
+gtxn 3 AssetCloseTo
+global ZeroAddress
+==
+assert 
+gtxn 3 AssetCloseTo
+global ZeroAddress
+==
+assert 
+gtxn 3 RekeyTo
+global ZeroAddress
+==
 assert
 gtxn 2 Fee 
 int 2000
 <=
+assert
+gtxn 3 Fee 
+int 2000
+<=
+assert
+gtxn 3 TypeEnum 
+int 1
+==
+assert
+gtxn 1 Fee 
+gtxn 3 Amount
+==
+assert
+gtxn 3 Receiver 
+gtxn 1 Sender 
+==
 assert
 gtxn 0 TypeEnum
 int 4
@@ -191,6 +219,9 @@ addr %s
 &&
 return
 withdraw:
+gtxn 1 Amount 
+gtxn 0 Fee 
+==
 gtxn 0 Receiver
 addr %s
 ==
@@ -198,11 +229,13 @@ bz assetWithdraw
 gtxn 1 Sender
 addr %s
 ==
+&&
 return
 assetWithdraw:
 gtxn 0 AssetReceiver
 addr %s
 ==
+&&
 gtxn 1 Sender 
 addr %s
 ==

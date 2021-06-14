@@ -113,6 +113,7 @@ export default {
           let buytx1 = buytx["firsttx"]
           let stxn2 = buytx["secondtx"]
           let buytx3 = buytx["thirdtx"]
+          let buytx4 = buytx["forthtx"]
           let txn1 = {
             fee: 1000,
             flatFee: true,
@@ -157,11 +158,25 @@ export default {
             group: buytx3.Group
           }
           }
+          let txn4 = {
+            fee: 1000,
+            flatFee: true,
+            type: 'pay',
+            from: algosdk.encodeAddress(buytx4.Sender),
+            to: algosdk.encodeAddress(buytx4.Receiver),
+            amount: buytx4.Amount,
+            genesisID: buytx4.GenesisID,
+            firstRound: buytx4.FirstValid,
+            genesisHash: buytx4.GenesisHash,
+            lastRound: buytx4.LastValid,
+            group: buytx4.Group
+          }
           let stxn1 = await myAlgoWallet.signTransaction(txn1);
           let stxn3 = await myAlgoWallet.signTransaction(this.txn3);
+          let stxn4 = await myAlgoWallet.signTransaction(txn4);
           let asciiString = atob(stxn2);
           let oui = new Uint8Array([...asciiString].map(char => char.charCodeAt(0)));
-          this.tosend = [stxn1.blob, oui, stxn3.blob]
+          this.tosend = [stxn1.blob, oui, stxn3.blob, stxn4.blob]
           console.log(this.tosend)
           try {
             await algodClient.sendRawTransaction(this.tosend).do();
