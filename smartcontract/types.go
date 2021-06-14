@@ -66,6 +66,7 @@ type txGroup struct {
 	FirstTx types.Transaction         	`json:"firsttx"`
 	SecondTx []byte 		 			`json:"secondtx"`
 	ThirdTx types.Transaction			`json:"thirdtx"`
+	ForthTx types.Transaction           `json:"forthtx"`
 }
 
 type Tx struct {
