@@ -90,22 +90,6 @@ gtxn 1 TypeEnum
 int 4
 ==
 &&
-gtxn 2 TypeEnum
-int 4
-==
-bz algoPayment
-gtxn 0 AssetAmount
-int 0
-==
-&&
-gtxn 1 AssetAmount
-int 1
-==
-&&
-gtxn 0 Sender
-gtxn 0 AssetReceiver
-==
-&&
 gtxn 0 XferAsset
 int %d
 ==
@@ -114,6 +98,22 @@ gtxn 1 XferAsset
 int %d
 ==
 &&
+gtxn 0 AssetAmount
+int 0
+==
+&&
+gtxn 2 TypeEnum
+int 4
+==
+gtxn 1 AssetAmount
+int 1
+==
+&&
+gtxn 0 Sender
+gtxn 0 AssetReceiver
+==
+&&
+bz algoPayment
 gtxn 2 XferAsset 
 int %d
 ==
@@ -142,6 +142,7 @@ gtxn 2 Amount
 int %d
 ==
 &&
+
 return
 optIn:
 global GroupSize
