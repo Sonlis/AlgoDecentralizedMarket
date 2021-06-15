@@ -110,25 +110,14 @@ int %d
 ==
 &&
 gtxn 2 TypeEnum
-int 4
-==
-bz algoPayment
-gtxn 2 XferAsset 
-int %d
-==
-&&
-gtxn 2 AssetAmount
 int 1
 ==
-&&
-return
-algoPayment:
-gtxn 2 TypeEnum
-int 1
-==
-&&
 gtxn 2 Amount
 int %d
+==
+&&
+gtxn 1 Sender 
+gtxn 2 Receiver
 ==
 &&
 return
@@ -139,7 +128,7 @@ int 2
 gtxn 1 TypeEnum 
 int 4
 ==
-bz secondOptin
+bz withdraw
 gtxn 0 TypeEnum
 int 4
 ==
@@ -165,31 +154,6 @@ addr %s
 ==
 &&
 return 
-secondOptin:
-gtxn 0 TypeEnum
-int 4
-==
-bz withdraw
-gtxn 0 AssetAmount
-int 0
-==
-bz withdraw
-gtxn 0 XferAsset
-int %d
-==
-gtxn 1 TypeEnum 
-int 1
-==
-&&
-gtxn 0 Sender
-gtxn 0 AssetReceiver
-==
-&&
-gtxn 1 Sender 
-addr %s
-==
-&&
-return
 withdraw:
 gtxn 1 Amount 
 gtxn 0 Fee 
@@ -207,8 +171,10 @@ assetWithdraw:
 gtxn 0 AssetReceiver
 addr %s
 ==
+&&
 gtxn 1 Sender 
 addr %s
 ==
 &&
 return
+

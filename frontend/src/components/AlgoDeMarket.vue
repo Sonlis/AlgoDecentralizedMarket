@@ -264,7 +264,7 @@ concatTypedArrays: function (a, b) { // a, b TypedArray of same type
   body {
     padding-left: 2%;
     padding-right: 2%;
-    background-color: rgb(233, 233, 233)
+    background-color: rgb(240, 240, 240)
   }
   input {
     width: 25%;
