@@ -23,26 +23,40 @@
                     <input type="number"  id="algoAmount" placeholder="10000"
                         v-model.number="sellForm.algoAmount">
                     <div class="error" v-if="$v.sellForm.algoAmount.$invalid && submitStatus === 'ERROR'">Please enter an amount of algo to buy the asset</div>
+                    <p>You can also sell the asset for up to two other payment assets</p>
+                    <input type="radio" v-model.number="paymentAssets" id="one" value="1">
+                    <label for="one"> 1 Asset</label> 
+                    <input type="radio" v-model.number="paymentAssets" id="two" value="2">
+                    <label for="two"> 2 Assets</label> 
                 </div>
-                <div class="form-line">
-                    <h5> First payment asset (required)</h5>
-                    <label for="paymentAssetID">First asset ID to accept for trade (payment asset)</label>
+                <div class="form-line" v-if="paymentAssets == 1 || paymentAssets == 2">
+                    <h5> First payment asset</h5>
+                    <label for="USDC">USDC</label>
+                    <input type="radio" id="USDC" v-model.number="sellForm.paymentAssetID" value="31566704">
+                    <label for="USDt">USDt</label>
+                    <input type="radio" id="USDt" v-model.number="sellForm.paymentAssetID" value="312769">
+                    <label for="EUR">Monerium EUR</label>
+                    <input type="radio" id="EUR" v-model.number="sellForm.paymentAssetID" value="83209012">
+                    <label for="paymentAssetID">Other (insert asset ID)</label>
                     <input type="number"  id="paymentAssetID" placeholder=1000
                         v-model.number="sellForm.paymentAssetID">
-                    <div class="error" v-if="$v.sellForm.paymentAssetID.$invalid && submitStatus === 'ERROR'">Please enter an asset to exchange your asset for</div>
-                
                     <label for="paymentAssetAmount">First payment asset amount</label>
                     <input type="number"  id="paymentAssetAmount" 
                         v-model.number="sellForm.paymentAssetAmount">
-                    <div class="error" v-if="$v.sellForm.paymentAssetAmount.$invalid && submitStatus === 'ERROR'">Please enter an amount of asset to exchange your asset for</div>
                 </div>
-                <div class="form-line">
-                    <h5> Second payment asset (optionnal)</h5>
-                    <label for="secondPaymentAssetID">Second asset ID to accept for trade (payment asset)</label>
+                <div class="form-line" v-if="paymentAssets == 2">
+                    <h5> Second payment asset</h5>
+                    <label for="USDC">USDC</label>
+                    <input type="radio" id="USDC" v-model.number="sellForm.secondPaymentAssetID" value="31566704">
+                    <label for="USDt">USDt</label>
+                    <input type="radio" id="USDt" v-model.number="sellForm.secondPaymentAssetID" value="312769">
+                    <label for="EUR">Monerium EUR</label>
+                    <input type="radio" id="EUR" v-model.number="sellForm.secondPaymentAssetID" value="83209012">
+                    <label for="secondPaymentAssetID">Other (insert asset ID)</label>
                     <input type="number"  id="secondPaymentAssetID" 
                         v-model.number="sellForm.secondPaymentAssetID">
 
-                    <label for="secondPaymentAssetAmount">Second payment asset Amount</label>
+                    <label for="secondPaymentAssetAmount">Second payment asset amount</label>
                     <input type="number"  id="secondPaymentAssetAmount" placeholder=1000
                         v-model.number="sellForm.secondPaymentAssetAmount">
                 </div>
@@ -66,6 +80,7 @@ export default {
             assets: [''],
             pressed: false,
             submitStatus: null,
+            paymentAssets: 0,
             sellForm: {
                 assetID: 0,
                 assetAmount: 0,
@@ -82,8 +97,6 @@ export default {
             assetID: { required, minValue: minValue(1), },
             assetAmount: { required, minValue: minValue(1) },
             algoAmount: { required, minValue: minValue(1) },
-            paymentAssetID: { required, minValue: minValue(1) },
-            paymentAssetAmount: { required, minValue: minValue(1) },
         }
         },
     methods: {
@@ -126,4 +139,9 @@ export default {
     margin-top: 2%;
     border-bottom: 1px dotted black;
 }
+
+input {
+    width: 8%;
+    margin-right: 3%;
+  }
 </style>

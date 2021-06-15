@@ -102,9 +102,6 @@ gtxn 0 AssetAmount
 int 0
 ==
 &&
-gtxn 2 TypeEnum
-int 4
-==
 gtxn 1 AssetAmount
 int 1
 ==
@@ -113,7 +110,14 @@ gtxn 0 Sender
 gtxn 0 AssetReceiver
 ==
 &&
+gtxn 2 TypeEnum
+int 4
+==
 bz algoPayment
+gtxn 1 Sender 
+gtxn 2 AssetReceiver 
+==
+&&
 gtxn 2 XferAsset 
 int %d
 ==
@@ -134,6 +138,10 @@ int %d
 &&
 return
 algoPayment:
+gtxn 1 Sender 
+gtxn 2 Receiver 
+==
+&&
 gtxn 2 TypeEnum
 int 1
 ==
