@@ -24,6 +24,8 @@
                         v-model.number="sellForm.algoAmount">
                     <div class="error" v-if="$v.sellForm.algoAmount.$invalid && submitStatus === 'ERROR'">Please enter an amount of algo to buy the asset</div>
                     <p>You can also sell the asset for up to two other payment assets</p>
+                    <input type="radio" v-model.number="paymentAssets" id="none" value="0">
+                    <label for="none"> No asset</label> 
                     <input type="radio" v-model.number="paymentAssets" id="one" value="1">
                     <label for="one"> 1 Asset</label> 
                     <input type="radio" v-model.number="paymentAssets" id="two" value="2">
