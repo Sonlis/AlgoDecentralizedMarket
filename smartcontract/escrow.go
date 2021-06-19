@@ -68,12 +68,13 @@ func createEscrow(w http.ResponseWriter, r *http.Request) {
         http.Error(w, err.Error(), 500)
         return
     }
-    err = algoClient.opTin(p.PaymentAssetId, addr, account1, lsig, sk1)
-
-    if err != nil {
-        log.Printf("Failed to opt-in asset %d: %v\n", p.PaymentAssetId, err)
-        http.Error(w, err.Error(), 400)
-        return
+    if p.PaymentAssetId != 0 {
+        err = algoClient.opTin(p.PaymentAssetId, addr, account1, lsig, sk1)
+        if err != nil {
+            log.Printf("Failed to opt-in asset %d: %v\n", p.PaymentAssetId, err)
+            http.Error(w, err.Error(), 400)
+            return
+    }
     }
     if p.SecondPaymentAssetId != 0 {
         err = algoClient.opTin(p.SecondPaymentAssetId, addr, account1, lsig, sk1)
