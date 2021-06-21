@@ -58,8 +58,9 @@ func buy(w http.ResponseWriter, r *http.Request) {
         return
     }
     var txn3 types.Transaction
-    if tx.AlgoAmount != 0 {
-        txn3, err = transaction.MakePaymentTxnWithFlatFee(tx.Sender, tx.Address, minFee, tx.AlgoAmount, firstValidRound, lastValidRound, nil, "", genID, genHash)
+    if tx.AlgoAmount != 0 { 
+        AlgoAmount := tx.AlgoAmount * 1000000
+        txn3, err = transaction.MakePaymentTxnWithFlatFee(tx.Sender, tx.Address, minFee, AlgoAmount, firstValidRound, lastValidRound, nil, "", genID, genHash)
         if err != nil {
             log.Printf("Error making payment transaction of %d Algos from %s to %s: %v\n\n", tx.AlgoAmount, tx.Sender, tx.Address, err)
             http.Error(w, err.Error(), 400)
@@ -92,7 +93,7 @@ func buy(w http.ResponseWriter, r *http.Request) {
         http.Error(w, err.Error(), 400)
         return
     }
-    
+     
     program, err :=  base64.StdEncoding.DecodeString(response.Result)   
     lsig, err := crypto.MakeLogicSig(program, nil, sk, ma)
     if err != nil {
@@ -159,7 +160,8 @@ func withdraw(w http.ResponseWriter, r *http.Request) {
 	genHash64 := base64.StdEncoding.EncodeToString(genHash)
 
 	if (withdraw.Algo != 0){
-		txn1, err = transaction.MakePaymentTxnWithFlatFee(withdraw.Address, withdraw.Creator, minFee, withdraw.Algo, firstValidRound, lastValidRound, nil, "", genID, genHash)
+        Algo := withdraw.Algo * 1000000
+		txn1, err = transaction.MakePaymentTxnWithFlatFee(withdraw.Address, withdraw.Creator, minFee, Algo, firstValidRound, lastValidRound, nil, "", genID, genHash)
 		if err != nil {
 			log.Printf("Error making payment transaction of %d Algos from %s to %s: %v\n", withdraw.Algo, withdraw.Address, withdraw.Creator, err)
 			http.Error(w, err.Error(), 400)
