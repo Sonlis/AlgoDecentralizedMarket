@@ -19,7 +19,7 @@
                         v-model.number="sellForm.assetAmount">
                     <div class="error" v-if="$v.sellForm.assetAmount.$invalid && submitStatus === 'ERROR'">Please enter an amount of asset to sell</div>
 
-                    <label for="algoAmount">MicroAlgo needed to buy the asset</label>
+                    <label for="algoAmount">Algo needed to buy the asset</label>
                     <input type="number"  id="algoAmount" placeholder="10000"
                         v-model.number="sellForm.algoAmount">
                     <div class="error" v-if="$v.sellForm.algoAmount.$invalid && submitStatus === 'ERROR'">Please enter an amount of algo to buy the asset</div>
