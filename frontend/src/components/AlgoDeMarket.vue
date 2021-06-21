@@ -61,10 +61,31 @@ export default {
         body: JSON.stringify({"assetid": sellForm.assetID, "assetamount": sellForm.assetAmount, "paymentassetid": sellForm.paymentAssetID, "paymentassetamount": sellForm.paymentAssetAmount, "secondpaymentassetid": sellForm.secondPaymentAssetID, "secondpaymentassetamount": sellForm.secondPaymentAssetAmount, "algoamount": sellForm.algoAmount, "creatoraddress": this.addrToUse}),
         }
         console.log(requestOptions.body)
-        const response = await fetch("http://localhost:8081/createEscrow", requestOptions);
+        let response = await fetch("http://localhost:8081/activateEscrow", requestOptions);
         let answer = await response.json();
         console.log(answer)
-        let stxn1 = answer["firsttx"]
+        console.log(answer.Sender)
+        let txn1 = {
+            fee: 1000,
+            flatFee: true,
+            type: 'pay',
+            from: algosdk.encodeAddress(answer.Sender),
+            to: algosdk.encodeAddress(answer.Receiver),
+            amount: answer.Amount,
+            genesisID: answer.GenesisID,
+            firstRound: answer.FirstValid,
+            genesisHash: answer.GenesisHash,
+            lastRound: answer.LastValid,
+        }
+        let stxn1 = await myAlgoWallet.signTransaction(txn1);
+        try {
+          await algodClient.sendRawTransaction(stxn1.blob).do();
+        } catch(exception) {
+          console.log(exception)
+        }
+        response = await fetch("http://localhost:8081/fundEscrow", requestOptions);
+        answer = await response.json();
+        stxn1 = answer["firsttx"]
         let tx2 = answer["secondtx"]
         let txn2 = {
           fee: 1000,
@@ -90,7 +111,6 @@ export default {
         } catch(exception) {
           console.log(exception)
         }
-        
         },
         buy: async function(buyForm) {
           if (buyForm.algoAmount === 0){
