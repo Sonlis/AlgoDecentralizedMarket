@@ -15,7 +15,8 @@ func main() {
 		handlers.AllowedOrigins([]string{"*"}),
 	)
 	r := mux.NewRouter()
-    r.HandleFunc("/createEscrow", createEscrow)
+    r.HandleFunc("/activateEscrow", activateEscrow)
+	r.HandleFunc("/fundEscrow", fundEscrow)
 	r.HandleFunc("/lookup", lookupAssets)
 	r.HandleFunc("/getSellings", lookupEscrowAssets)
 	r.HandleFunc("/buy", buy)
