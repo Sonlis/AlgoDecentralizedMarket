@@ -23,14 +23,6 @@ gtxn 1 AssetCloseTo
 global ZeroAddress
 ==
 assert
-gtxn 0 Fee
-int 2000
-<=
-assert
-gtxn 1 Fee 
-int 2000
-<=
-assert
 global GroupSize
 int 2
 ==
@@ -62,6 +54,13 @@ assert
 gtxn 3 RekeyTo
 global ZeroAddress
 ==
+gtxn 0 Fee
+int 2000
+<=
+assert
+gtxn 1 Fee 
+int 2000
+<=
 assert
 gtxn 2 Fee 
 int 2000
@@ -90,14 +89,7 @@ gtxn 1 TypeEnum
 int 4
 ==
 &&
-gtxn 0 XferAsset
-int %d
-==
-&&
-gtxn 1 XferAsset
-int %d
-==
-&&
+
 gtxn 0 AssetAmount
 int 0
 ==
@@ -110,38 +102,28 @@ gtxn 0 Sender
 gtxn 0 AssetReceiver
 ==
 &&
+gtxn 0 XferAsset
+int %d
+==
+&&
+gtxn 1 XferAsset
+int %d
+==
+&&
 gtxn 2 TypeEnum
 int 4
 ==
 bz algoPayment
-gtxn 1 Sender 
-gtxn 2 AssetReceiver 
-==
-&&
 gtxn 2 XferAsset 
 int %d
 ==
-bz secondAsset
-gtxn 2 AssetAmount
-int %d
-==
 &&
-return
-secondAsset:
-gtxn 2 XferAsset
-int %d
-==
-assert
 gtxn 2 AssetAmount
-int %d
+int 1
 ==
 &&
 return
 algoPayment:
-gtxn 1 Sender 
-gtxn 2 Receiver 
-==
-&&
 gtxn 2 TypeEnum
 int 1
 ==
@@ -150,7 +132,6 @@ gtxn 2 Amount
 int %d
 ==
 &&
-
 return
 optIn:
 global GroupSize
@@ -186,38 +167,21 @@ addr %s
 &&
 return 
 secondOptin:
-gtxn 0 XferAsset
-int %d
+gtxn 0 TypeEnum
+int 4
 ==
-bz thirdOptin
-gtxn 1 TypeEnum 
-int 1
-==
+bz withdraw
 gtxn 0 AssetAmount
 int 0
 ==
 bz withdraw
-gtxn 0 Sender
-gtxn 0 AssetReceiver
-==
-&&
-gtxn 1 Sender 
-addr %s
-==
-&&
-return
-thirdOptin:
 gtxn 0 XferAsset
 int %d
 ==
-bz withdraw
 gtxn 1 TypeEnum 
 int 1
 ==
-gtxn 0 AssetAmount
-int 0
-==
-bz withdraw
+&&
 gtxn 0 Sender
 gtxn 0 AssetReceiver
 ==
@@ -244,7 +208,6 @@ assetWithdraw:
 gtxn 0 AssetReceiver
 addr %s
 ==
-&&
 gtxn 1 Sender 
 addr %s
 ==

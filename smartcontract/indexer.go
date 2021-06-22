@@ -14,23 +14,36 @@ import (
 func lookupAssets(w http.ResponseWriter, r *http.Request) {
 	indexerClient, err := indexer.MakeClient(indexerAddress, indexerToken)
 	if err != nil {
-		return
+		log.Printf("Error making indexer client: %v\n", err)
+		http.Error(w, err.Error(), 500)
+        return
 	}
 	var accountID AccountID
 	decoder := json.NewDecoder(r.Body)
 	err = decoder.Decode(&accountID)
 	if err != nil {
-		log.Println("Error decoding:", err)
+		log.Printf("Error decoding body: %v\n", err)
+		http.Error(w, err.Error(), 400)
+        return
 	}
 	_, result, err := indexerClient.LookupAccountByID(accountID.AccountID).Do(context.Background())
+	if err != nil {
+		log.Printf("Error looking account's assets: %v\n", err)
+		http.Error(w, err.Error(), 400)
+        return
+	}
     var assets Assets
     assetslist, err := json.Marshal(result)
 	if err != nil {
-		log.Println("Error marshaling:", err)
+		log.Printf("Error marshaling into new struct: %v\n", err)
+		http.Error(w, err.Error(), 500)
+        return
 	}
     err = json.Unmarshal(assetslist, &assets)
 	if err != nil {
-		log.Println("Error Unmarshaling:", err)
+		log.Printf("Error Unmarshaling into a new struct: %v\n", err)
+		http.Error(w, err.Error(), 500)
+        return
 	}
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
@@ -44,19 +57,30 @@ func lookupAssets(w http.ResponseWriter, r *http.Request) {
 func lookupEscrowAssets(w http.ResponseWriter, r *http.Request) {
 	indexerClient, err := indexer.MakeClient(indexerAddress, indexerToken)
 	if err != nil {
-		log.Printf("Error creating indexer")
+		log.Printf("Error creating indexer: %v\n", err)
+		http.Error(w, err.Error(), 500)
+        return
 	}
 	var toReturn Assets
 	for i := range(sellings) {
 		_, result, err := indexerClient.LookupAccountByID(sellings[i].Address).Do(context.Background())
+		if err != nil {
+			log.Printf("Error looking %s holdings: %v\n", sellings[i].Address, err)
+			http.Error(w, err.Error(), 400)
+        	return
+		}
 		var assets Assets
     	assetslist, err := json.Marshal(result)
 		if err != nil {
-			log.Println("Error marshaling:", err)
+			log.Printf("Error marshaling into a new struct: %v\n", err)
+			http.Error(w, err.Error(), 500)
+        	return
 		}
     	err = json.Unmarshal(assetslist, &assets)
 		if err != nil {
-			log.Println("Error Unmarshaling:", err)
+			log.Printf("Error Unmarshaling into new struct: %v\n", err)
+			http.Error(w, err.Error(), 500)
+        	return
 		}	
 		for j := range(assets.Assets) {
 			if assets.Assets[j].AssetId == sellings[i].Asset {
@@ -85,12 +109,16 @@ func lookupSellings(w http.ResponseWriter, r *http.Request) {
 	)
 	indexerClient, err := indexer.MakeClient(indexerAddress, indexerToken)
 	if err != nil {
-		log.Printf("Error creating indexer: %s", err)
+		log.Printf("Error creating indexer: %v\n", err)
+		http.Error(w, err.Error(), 500)
+        return
 	}
 	decoder := json.NewDecoder(r.Body)
 	err = decoder.Decode(&accountID)
 	if err != nil {
-		log.Println("Error decoding:", err)
+		log.Printf("Error decoding request body: %v\n", err)
+		http.Error(w, err.Error(), 500)
+        return
 	}
 	for i := range(sellings) {
 		if sellings[i].CreatorAddress == accountID.AccountID {
@@ -100,16 +128,22 @@ func lookupSellings(w http.ResponseWriter, r *http.Request) {
 	for i := range(toCheck) {
 		_, result, err := indexerClient.LookupAccountByID(toCheck[i].Address).Do(context.Background())
 		if err != nil {
-			log.Printf("Error checking escrow account %s: %s", toCheck[i].Address, err)
+			log.Printf("Error checking escrow account %s: %v", toCheck[i].Address, err)
+			http.Error(w, err.Error(), 500)
+        	return
 		}
 		var assets Assets
     	assetslist, err := json.Marshal(result)
 		if err != nil {
-			log.Println("Error marshaling:", err)
+			log.Printf("Error marshaling into new struct: %v\n", err)
+			http.Error(w, err.Error(), 500)
+        	return
 		}
     	err = json.Unmarshal(assetslist, &assets)
 		if err != nil {
-			log.Println("Error Unmarshaling:", err)
+			log.Printf("Error Unmarshaling into new struct: %v\n", err)
+			http.Error(w, err.Error(), 500)
+        	return
 		}
 		toReturn = append(toReturn, assets)
 	}

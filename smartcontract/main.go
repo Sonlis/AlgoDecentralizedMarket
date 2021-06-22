@@ -15,14 +15,13 @@ func main() {
 		handlers.AllowedOrigins([]string{"*"}),
 	)
 	r := mux.NewRouter()
-    r.HandleFunc("/createAsset", createAsset)
-    r.HandleFunc("/createEscrow", createEscrow)
+    r.HandleFunc("/activateEscrow", activateEscrow)
+	r.HandleFunc("/fundEscrow", fundEscrow)
 	r.HandleFunc("/lookup", lookupAssets)
 	r.HandleFunc("/getSellings", lookupEscrowAssets)
 	r.HandleFunc("/buy", buy)
 	r.HandleFunc("/lookupSellings", lookupSellings)
-	r.HandleFunc("/withdrawAlgos", withdrawAlgos)
-	r.HandleFunc("/withdrawAssets", withdrawAssets)
+	r.HandleFunc("/withdraw", withdraw)
 	r.Use(cors)
 	log.Fatal(http.ListenAndServe(":8081", (r)))
 }

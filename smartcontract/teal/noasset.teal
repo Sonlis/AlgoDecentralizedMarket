@@ -28,7 +28,7 @@ int 2
 ==
 bnz optIn
 global GroupSize
-int 3
+int 4
 ==
 assert
 gtxn 2 AssetCloseTo
@@ -43,6 +43,17 @@ gtxn 2 RekeyTo
 global ZeroAddress
 ==
 assert
+gtxn 3 AssetCloseTo
+global ZeroAddress
+==
+assert 
+gtxn 3 AssetCloseTo
+global ZeroAddress
+==
+assert 
+gtxn 3 RekeyTo
+global ZeroAddress
+==
 gtxn 0 Fee
 int 2000
 <=
@@ -55,6 +66,22 @@ gtxn 2 Fee
 int 2000
 <=
 assert
+gtxn 3 Fee 
+int 2000
+<=
+assert
+gtxn 3 TypeEnum 
+int 1
+==
+assert
+gtxn 1 Fee 
+gtxn 3 Amount
+==
+assert
+gtxn 3 Receiver 
+gtxn 1 Sender 
+==
+assert
 gtxn 0 TypeEnum
 int 4
 ==
@@ -62,10 +89,6 @@ gtxn 1 TypeEnum
 int 4
 ==
 &&
-gtxn 2 TypeEnum
-int 4
-==
-bz algoPayment
 gtxn 0 AssetAmount
 int 0
 ==
@@ -79,39 +102,22 @@ gtxn 0 AssetReceiver
 ==
 &&
 gtxn 0 XferAsset
-int 146
+int %d
 ==
 &&
 gtxn 1 XferAsset
-int 146 
+int %d
 ==
 &&
-gtxn 2 XferAsset 
-int 20
-==
-bz secondAsset
-gtxn 2 AssetAmount
-int 10
-==
-&&
-return
-secondAsset:
-gtxn 2 XferAsset
-int 174
-==
-assert
-gtxn 2 AssetAmount
-int 1
-==
-&&
-return
-algoPayment:
 gtxn 2 TypeEnum
 int 1
 ==
-&&
 gtxn 2 Amount
-int 1000
+int %d
+==
+&&
+gtxn 1 Sender 
+gtxn 2 Receiver
 ==
 &&
 return
@@ -122,17 +128,17 @@ int 2
 gtxn 1 TypeEnum 
 int 4
 ==
-bz secondOptin
+bz withdraw
 gtxn 0 TypeEnum
 int 4
 ==
 &&
 gtxn 0 XferAsset
-int 146
+int %d
 ==
 &&
 gtxn 1 XferAsset 
-int 146
+int %d
 ==
 &&
 gtxn 0 AssetAmount
@@ -144,68 +150,31 @@ gtxn 0 AssetReceiver
 ==
 &&
 gtxn 1 Sender 
-addr POXPZO6XID4ZVQJYPOMHKD6Z33NX67GV6V4X5DU7BXICILJTQZVUITH234
+addr %s
 ==
 &&
 return 
-secondOptin:
-gtxn 0 XferAsset
-int 20
-==
-bz thirdOptin
-gtxn 1 TypeEnum 
-int 1
-==
-gtxn 0 AssetAmount
-int 0
-==
-bz withdraw
-gtxn 0 Sender
-gtxn 0 AssetReceiver
-==
-&&
-gtxn 1 Sender 
-addr POXPZO6XID4ZVQJYPOMHKD6Z33NX67GV6V4X5DU7BXICILJTQZVUITH234
-==
-&&
-return
-thirdOptin:
-gtxn 0 XferAsset
-int 174
-==
-bz withdraw
-gtxn 1 TypeEnum 
-int 1
-==
-
-gtxn 0 AssetAmount
-int 0
-==
-bz withdraw
-gtxn 0 Sender
-gtxn 0 AssetReceiver
-==
-&&
-gtxn 1 Sender 
-addr POXPZO6XID4ZVQJYPOMHKD6Z33NX67GV6V4X5DU7BXICILJTQZVUITH234
-==
-&&
-return
 withdraw:
+gtxn 1 Amount 
+gtxn 0 Fee 
+==
 gtxn 0 Receiver
-addr POXPZO6XID4ZVQJYPOMHKD6Z33NX67GV6V4X5DU7BXICILJTQZVUITH234
+addr %s
 ==
 bz assetWithdraw
 gtxn 1 Sender
-addr POXPZO6XID4ZVQJYPOMHKD6Z33NX67GV6V4X5DU7BXICILJTQZVUITH234 
-==
-return
-assetWithdraw:
-gtxn 0 AssetReceiver
-addr POXPZO6XID4ZVQJYPOMHKD6Z33NX67GV6V4X5DU7BXICILJTQZVUITH234
-==
-gtxn 1 Sender 
-addr POXPZO6XID4ZVQJYPOMHKD6Z33NX67GV6V4X5DU7BXICILJTQZVUITH234 
+addr %s
 ==
 &&
 return
+assetWithdraw:
+gtxn 0 AssetReceiver
+addr %s
+==
+&&
+gtxn 1 Sender 
+addr %s
+==
+&&
+return
+

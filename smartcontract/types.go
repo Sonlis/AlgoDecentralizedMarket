@@ -66,6 +66,7 @@ type txGroup struct {
 	FirstTx types.Transaction         	`json:"firsttx"`
 	SecondTx []byte 		 			`json:"secondtx"`
 	ThirdTx types.Transaction			`json:"thirdtx"`
+	ForthTx types.Transaction           `json:"forthtx"`
 }
 
 type Tx struct {
@@ -78,17 +79,11 @@ type Tx struct {
 }
 
 type Withdraw struct {
+	AssetID 	uint64 `json:"assetid"`
+	AssetAmount uint64 `json:"assetamount"`
 	Algo 	uint64 `json:"algosamount"`
 	Address string `json:"escrowaddress"`
 	Creator string `json:"to"`
 }
-
-type WithdrawAsset struct {
-	AssetID 	uint64 `json:"assetid"`
-	AssetAmount uint64 `json:"assetamount"`
-	Address 	string `json:"escrowaddress"`
-	Creator 	string `json:"to"`
-}
-
 
 var sellings []Selling
