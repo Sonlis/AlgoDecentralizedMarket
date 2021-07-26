@@ -1,0 +1,180 @@
+#pragma version 3
+gtxn 0 AssetCloseTo
+global ZeroAddress
+==
+assert 
+gtxn 1 AssetCloseTo
+global ZeroAddress
+==
+assert 
+gtxn 0 RekeyTo
+global ZeroAddress
+==
+assert 
+gtxn 1 RekeyTo
+global ZeroAddress
+==
+assert
+gtxn 0 AssetCloseTo
+global ZeroAddress
+==
+assert
+gtxn 1 AssetCloseTo
+global ZeroAddress
+==
+assert
+global GroupSize
+int 2
+==
+bnz optIn
+global GroupSize
+int 4
+==
+assert
+gtxn 2 AssetCloseTo
+global ZeroAddress
+==
+assert 
+gtxn 2 AssetCloseTo
+global ZeroAddress
+==
+assert 
+gtxn 2 RekeyTo
+global ZeroAddress
+==
+assert
+gtxn 3 AssetCloseTo
+global ZeroAddress
+==
+assert 
+gtxn 3 AssetCloseTo
+global ZeroAddress
+==
+assert 
+gtxn 3 RekeyTo
+global ZeroAddress
+==
+gtxn 0 Fee
+int 2000
+<=
+assert
+gtxn 1 Fee 
+int 2000
+<=
+assert
+gtxn 2 Fee 
+int 2000
+<=
+assert
+gtxn 3 Fee 
+int 2000
+<=
+assert
+gtxn 3 TypeEnum 
+int 1
+==
+assert
+gtxn 1 Fee 
+gtxn 3 Amount
+==
+assert
+gtxn 3 Receiver 
+gtxn 1 Sender 
+==
+assert
+gtxn 0 TypeEnum
+int 4
+==
+gtxn 1 TypeEnum
+int 4
+==
+&&
+gtxn 0 AssetAmount
+int 0
+==
+&&
+gtxn 1 AssetAmount
+int 1
+==
+&&
+gtxn 0 Sender
+gtxn 0 AssetReceiver
+==
+&&
+gtxn 0 XferAsset
+int %d
+==
+&&
+gtxn 1 XferAsset
+int %d
+==
+&&
+gtxn 2 TypeEnum
+int 1
+==
+gtxn 2 Amount
+int %d
+==
+&&
+gtxn 1 Sender 
+gtxn 2 Receiver
+==
+&&
+return
+optIn:
+global GroupSize
+int 2
+==
+gtxn 1 TypeEnum 
+int 4
+==
+bz withdraw
+gtxn 0 TypeEnum
+int 4
+==
+&&
+gtxn 0 XferAsset
+int %d
+==
+&&
+gtxn 1 XferAsset 
+int %d
+==
+&&
+gtxn 0 AssetAmount
+int 0
+==
+&&
+gtxn 0 Sender
+gtxn 0 AssetReceiver
+==
+&&
+gtxn 1 Sender 
+addr %s
+==
+&&
+return 
+withdraw:
+gtxn 1 Amount 
+gtxn 0 Fee 
+==
+gtxn 0 Receiver
+addr %s
+==
+bz assetWithdraw
+gtxn 1 Sender
+addr %s
+==
+&&
+return
+assetWithdraw:
+gtxn 0 AssetReceiver
+addr %s
+==
+&&
+gtxn 1 Sender 
+addr %s
+==
+&&
+return
+
